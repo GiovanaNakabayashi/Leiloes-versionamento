@@ -63,5 +63,45 @@ public class ProdutosDAO {
         }
     
     return listagem;
-    }}       
+    }       
+
+    void venderProduto(int id) {
+         String selectSql = "SELECT status FROM produtos WHERE id = ?";
+         String updateSql = "UPDATE produtos SET status = ? WHERE id = ?";
+
+    try {
+        conn = new conectaDAO().connectDB();
+        prep = conn.prepareStatement(selectSql);
+        prep.setInt(1, id);
+        resultset = prep.executeQuery();
+        
+        if (resultset.next()) {
+            String statusAtual = resultset.getString("status");
+
+            if ("Vendido".equalsIgnoreCase(statusAtual)) {
+                JOptionPane.showMessageDialog(null, "Este produto já foi vendido.");
+                return; // Cancela a venda
+            }
+        }
+        
+          // Atualiza status para "Vendido"
+        prep = conn.prepareStatement(updateSql);
+        prep.setString(1, "Vendido");
+        prep.setInt(2, id);
+        prep.executeUpdate();
+        JOptionPane.showMessageDialog(null, "Produto vendido com sucesso!");
+
+    } catch (Exception e) {
+        JOptionPane.showMessageDialog(null, "Erro ao vender produto: " + e.getMessage());
+    }
+    finally {
+        try {
+            if (prep != null) prep.close();
+            if (conn != null) conn.close();
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, "Erro ao fechar conexão: " + e.getMessage());
+        }
+    }
+} 
+}
 
