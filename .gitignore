@@ -3,3 +3,6 @@
 *.class
 *.jar
 nbproject/private/
+
+# Arquivo com dados sensíveis
+config.properties
